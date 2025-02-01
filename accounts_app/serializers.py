@@ -7,23 +7,21 @@ class RegisterSerializer(serializers.Serializer):
     password = serializers.CharField(
         required=True,
         write_only=True,
-        validators=[
-            RegexValidator(
-                regex="^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{6,12}$",
-                message="حداقل 6 و حداکثر 12 کاراکتر، حداقل یک حرف بزرگ، یک حرف کوچک، یک عدد و یک کاراکتر خاص",
-            )
-        ],
+        min_length=8,
     )
     first_name = serializers.CharField(
         required=True,
         max_length=20,
+        min_length=3,
     )
     last_name = serializers.CharField(
         required=True,
         max_length=20,
+        min_length=3,
     )
     email = serializers.EmailField(
         max_length=256,
+        required=True,
     )
 
     def validate_email(self, value):
