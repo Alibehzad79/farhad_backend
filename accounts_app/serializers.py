@@ -33,3 +33,13 @@ class RegisterSerializer(serializers.Serializer):
             )
 
         return value
+
+
+class ResetPasswordSerializer(serializers.Serializer):
+    email = serializers.EmailField(required=True)
+
+    def validate_email(self, value):
+        value = value.lower()
+        if not get_user_model().objects.filter(email=value).exists():
+            raise serializers.ValidationError("کاربری با این ایمیل یافت نشد.", code=404)
+        return value
