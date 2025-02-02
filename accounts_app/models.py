@@ -12,6 +12,7 @@ class CustomUser(AbstractUser):
         verbose_name=_("توکن بازیابی رمز عبور"),
         blank=True,
         null=True,
+        unique=True,
     )
     USERNAME_FIELD = "email"
     REQUIRED_FIELDS = ["username"]

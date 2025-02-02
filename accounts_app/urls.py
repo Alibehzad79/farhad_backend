@@ -6,7 +6,11 @@ from rest_framework_simplejwt.views import (
     TokenVerifyView,
 )
 
-from accounts_app.views import register_api_view, send_reset_password_email_api_view
+from accounts_app.views import (
+    register_api_view,
+    send_reset_password_email_api_view,
+    change_password_api_view,
+)
 
 urlpatterns = [
     path("token/", TokenObtainPairView.as_view(), name="token_obtain_pair"),
@@ -18,5 +22,10 @@ urlpatterns = [
         "send-reset-password-email/",
         send_reset_password_email_api_view,
         name="send_reset_password_email_api_view",
+    ),
+    path(
+        "change-password/",
+        change_password_api_view,
+        name="change_password_api_view",
     ),
 ]

@@ -43,3 +43,13 @@ class ResetPasswordSerializer(serializers.Serializer):
         if not get_user_model().objects.filter(email=value).exists():
             raise serializers.ValidationError("کاربری با این ایمیل یافت نشد.", code=404)
         return value
+
+
+class ChangePasswordSerializer(serializers.Serializer):
+    password = serializers.CharField(min_length=8, required=True)
+    token = serializers.CharField(min_length=32, max_length=32, required=True)
+
+    def validate_token(self, value):
+        if not get_user_model().objects.filter(reset_password_token=value).exists():
+            raise serializers.ValidationError("توکن نامعتبر")
+        return value

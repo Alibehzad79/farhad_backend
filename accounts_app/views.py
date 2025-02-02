@@ -5,7 +5,11 @@ from rest_framework import status
 from django.contrib.auth import get_user_model
 from django.contrib.auth.hashers import make_password, get_random_string
 from django.core.mail import send_mail
-from accounts_app.serializers import RegisterSerializer, ResetPasswordSerializer
+from accounts_app.serializers import (
+    RegisterSerializer,
+    ResetPasswordSerializer,
+    ChangePasswordSerializer,
+)
 from config import settings
 
 # Create your views here.
@@ -53,4 +57,20 @@ def send_reset_password_email_api_view(request):
                 data={"message": "خطا در ارسال ایمیل"},
                 status=status.HTTP_400_BAD_REQUEST,
             )
+    return Response(data=serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+@api_view(["POST"])
+def change_password_api_view(request):
+    serializer = ChangePasswordSerializer(data=request.data)
+    if serializer.is_valid():
+        user = get_user_model().objects.get(
+            reset_password_token=serializer.data["token"]
+        )
+        user.password = make_password(serializer.data["password"])
+        user.reset_password_token = ""
+        user.save()
+        return Response(
+            data={"message": "رمز عبور با موفقیت تغییر یافت"}, status=status.HTTP_200_OK
+        )
     return Response(data=serializer.errors, status=status.HTTP_400_BAD_REQUEST)
