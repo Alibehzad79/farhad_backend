@@ -7,19 +7,9 @@ from django.utils.translation import gettext_lazy as _
 class Category(models.Model):
     name = models.CharField(max_length=100, verbose_name=_("عنوان"))
     slug = models.SlugField(verbose_name=_("اسلاگ"))
-    parent = models.ForeignKey(
-        "self",
-        on_delete=models.CASCADE,
-        verbose_name=_("دسته بندی مادر"),
-        blank=True,
-        null=True,
-    )
 
     def __str__(self):
-        if self.parent:
-            return self.parent.name + "/" + self.name
-        else:
-            return self.name
+        return self.name
 
     class Meta:
         verbose_name = _("دسته بندی")
@@ -46,11 +36,12 @@ class Product(models.Model):
         max_length=165, verbose_name=_("توضیحات مختصر")
     )
     content = models.TextField(verbose_name=_("توضیحات کامل"))
+    image = models.ImageField(upload_to="images/", verbose_name=_("عکس محصول"))
     price = models.BigIntegerField(default=0, verbose_name=_("قیمت(تومان)"))
     category = models.ForeignKey(
         Category, on_delete=models.CASCADE, verbose_name=_("دسته بندی")
     )
-    tags = models.ManyToManyField(Tag, verbose_name=_("برچسب ها"))
+    tags = models.ManyToManyField(Tag, verbose_name=_("برچسب ها"), related_name="tags")
     status = models.CharField(
         max_length=50, choices=STATUS, default="active", verbose_name=_("وضعیت محصول")
     )
@@ -60,6 +51,12 @@ class Product(models.Model):
 
     def __str__(self):
         return self.title
+
+    def save(self, *args, **kwargs):
+        # do save slug
+        if self.slug == None:
+            self.slug = self.title.replace(" ", "-")
+        super(Product, self).save(*args, **kwargs)
 
     class Meta:
         verbose_name = _("محصول")

@@ -163,6 +163,7 @@ EMAIL_HOST_PASSWORD = "ytmf yygy wetz znfa"
 DEFAULT_FROM_EMAIL = "no-replay@mail.best-social.ir"
 
 FRONTEND_URL = "http://169.254.158.85:3000"
+BACKEND_URL = "http://127.0.0.1:8000"
 
 
 SIMPLE_JWT = {
