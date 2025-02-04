@@ -20,6 +20,7 @@ class ProductSerializer(serializers.ModelSerializer):
     category = CategorySerializer()
     tags = TagSerializer(many=True)
     image = serializers.SerializerMethodField()
+    discount_price = serializers.FloatField()
 
     class Meta:
         model = Product
@@ -27,3 +28,6 @@ class ProductSerializer(serializers.ModelSerializer):
 
     def get_image(self, obj):
         return f"{settings.BACKEND_URL}{obj.image.url}"
+
+    def get_discount_price(self, obj):
+        return self.get_discount_price()

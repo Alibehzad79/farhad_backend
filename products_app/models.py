@@ -1,5 +1,7 @@
 from django.db import models
 from django.utils.translation import gettext_lazy as _
+from django.core import validators
+from django.core.exceptions import ValidationError
 
 # Create your models here.
 
@@ -38,6 +40,14 @@ class Product(models.Model):
     content = models.TextField(verbose_name=_("توضیحات کامل"))
     image = models.ImageField(upload_to="images/", verbose_name=_("عکس محصول"))
     price = models.BigIntegerField(default=0, verbose_name=_("قیمت(تومان)"))
+    discount = models.FloatField(
+        default=0,
+        verbose_name=_("درصد تخفیف"),
+        validators=[
+            validators.MinValueValidator(0, "کمترین مقدار باید صفر باشد."),
+            validators.MaxValueValidator(100, "بیشتر مقدار باید 100 باشد."),
+        ],
+    )
     category = models.ForeignKey(
         Category, on_delete=models.CASCADE, verbose_name=_("دسته بندی")
     )
@@ -57,6 +67,11 @@ class Product(models.Model):
         if self.slug == None:
             self.slug = self.title.replace(" ", "-")
         super(Product, self).save(*args, **kwargs)
+
+    def discount_price(self):
+        if self.discount > 0:
+            final_price = self.price - (self.price * (self.discount / 100))
+            return final_price
 
     class Meta:
         verbose_name = _("محصول")
@@ -79,3 +94,55 @@ class Gallery(models.Model):
     class Meta:
         verbose_name = _("گالری")
         verbose_name_plural = _("گالری ها")
+
+
+class SetDiscount(models.Model):
+    discount = models.FloatField(
+        default=0,
+        verbose_name=_("درصد تخفیف"),
+        validators=[
+            validators.MinValueValidator(0, "کمترین مقدار باید صفر باشد."),
+            validators.MaxValueValidator(100, "بیشتر مقدار باید 100 باشد."),
+        ],
+    )
+    category = models.ForeignKey(
+        Category,
+        on_delete=models.CASCADE,
+        verbose_name=_("دسته بندی"),
+        help_text=_("درصد تخفیف بر روی همه محصولات موجود در دسته بندی اصافه خواهد شد."),
+    )
+
+    def __str__(self):
+        return self.category.name
+
+    class Meta:
+        verbose_name = _("تخفیف")
+        verbose_name_plural = _("تخفیفات بر اساس دسته بندی")
+
+    def get_re_submit(self):
+        if self.category.product_set.count() > 0:
+            products = Product.objects.filter(category=self.category).all()
+            for product in products:
+                product.discount = self.discount
+            super(Product, product).save(*args, **kwargs)
+            super(SetDiscount, self).save(*args, **kwargs)
+
+    def clean(self):
+        if self.category.product_set.count() < 1:
+            raise ValidationError({"category": "هیچ محصولی در این دسته بندی یافت نشد."})
+
+    def save(self, *args, **kwargs):
+        # do save discount in all products in category
+        # if self.category.product_set.count() > 0:
+        products = Product.objects.filter(category=self.category).all()
+        for product in products:
+            product.discount = self.discount
+        super(Product, product).save(*args, **kwargs)
+        super(SetDiscount, self).save(*args, **kwargs)
+
+    def delete(self, *args, **kwargs):
+        products = Product.objects.filter(category=self.category).all()
+        for product in products:
+            product.discount = 0
+        super().delete(*args, **kwargs)
+        super(Product, product).save(*args, **kwargs)
