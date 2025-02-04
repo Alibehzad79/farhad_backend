@@ -2,6 +2,7 @@ from django.db import models
 from django.utils.translation import gettext_lazy as _
 from django.core import validators
 from django.core.exceptions import ValidationError
+from django.db.models import Q
 
 # Create your models here.
 
@@ -28,6 +29,21 @@ class Tag(models.Model):
     class Meta:
         verbose_name = _("تگ")
         verbose_name_plural = _("تگ ها")
+
+
+class ProductManager(models.Manager):
+    def get_search(self, query):
+        lookup = (
+            Q(title__icontains=query)
+            | Q(slug__icontains=query)
+            | Q(short_description__icontains=query)
+            | Q(content__icontains=query)
+            | Q(category__name__icontains=query)
+            | Q(category__slug__icontains=query)
+            | Q(tags__name__icontains=query)
+            | Q(tags__slug__icontains=query)
+        )
+        return self.get_queryset().filter(lookup).order_by('-date_created').all().distinct()
 
 
 class Product(models.Model):
@@ -58,6 +74,8 @@ class Product(models.Model):
     date_created = models.DateTimeField(
         auto_now=False, auto_now_add=False, verbose_name=_("تاریخ ایجاد")
     )
+
+    objects = ProductManager()
 
     def __str__(self):
         return self.title

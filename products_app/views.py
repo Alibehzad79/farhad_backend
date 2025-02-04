@@ -34,15 +34,30 @@ def product_detail_api_view(request, *args, **kwargs):
 
 
 @api_view(["GET"])
-def categories_api_view(request):
+def categories_tags_api_view(request):
     categories = Category.objects.all()
-    serializer = CategorySerializer(categories, many=True)
-    return Response(data=serializer.data, status=status.HTTP_200_OK)
+    tags = Tag.objects.all()
+    serializer = {
+        "categories": CategorySerializer(categories, many=True).data,
+        "tags": TagSerializer(tags, many=True).data,
+    }
+    return Response(data=serializer, status=status.HTTP_200_OK)
+
+
+# @api_view(["GET"])
+# def tags_api_view(request):
+#     tags = Category.objects.all()
+#     serializer = TagSerializer(tags, many=True)
+#     return Response(data=serializer.data, status=status.HTTP_200_OK)
 
 
 @api_view(["GET"])
-def tags_api_view(request):
-    tags = Category.objects.all()
-    serializer = TagSerializer(tags, many=True)
+def product_list_by_search_api_view(request):
+    query = request.GET.get("query")
+    print(query)
+    if query is not None:
+        products = Product.objects.get_search(query=query)
+    else:
+        products = Product.objects.order_by("-date_created").all()
+    serializer = ProductSerializer(products, many=True)
     return Response(data=serializer.data, status=status.HTTP_200_OK)
-
