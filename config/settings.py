@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     "django_filters",
     "rest_framework_api_key",
     "rest_framework_simplejwt",
+    'tinymce',
     # apps
     "accounts_app.apps.AccountsAppConfig",
     "products_app.apps.ProductsAppConfig",

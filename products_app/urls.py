@@ -15,6 +15,11 @@ urlpatterns = [
         name="product_list_api_view",
     ),
     path(
+        "detail/<slug:slug>/",
+        product_detail_api_view,
+        name="product_detail_api_view",
+    ),
+    path(
         "categories_tags/",
         categories_tags_api_view,
         name="categories_api_view",

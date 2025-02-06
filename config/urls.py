@@ -25,6 +25,7 @@ api_version_v_1 = "api/v1"
 urlpatterns = [
     path(f"{api_version_v_1}/accounts/", include("accounts_app.urls")),
     path(f"{api_version_v_1}/products/", include("products_app.urls")),
+    path('tinymce/', include('tinymce.urls')),
     path("admin/", admin.site.urls),
 ]
 

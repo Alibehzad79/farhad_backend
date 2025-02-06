@@ -1,5 +1,5 @@
 from django.contrib import admin, messages
-from products_app.models import Category, Tag, Product, Gallery, SetDiscount
+from products_app.models import Category, Tag, Product, Gallery, SetDiscount, Option
 from django.urls import reverse
 from django.utils.html import format_html
 
@@ -8,6 +8,11 @@ from django.utils.html import format_html
 
 class GalleryInline(admin.TabularInline):
     model = Gallery
+    extra = 3
+
+
+class OptionInline(admin.TabularInline):
+    model = Option
     extra = 3
 
 
@@ -24,9 +29,7 @@ class ProductAdmin(admin.ModelAdmin):
     list_editable = ("status",)
     list_filter = ("date_created", "category")
     search_fields = ("title", "short_description", "content")
-    inlines = [
-        GalleryInline,
-    ]
+    inlines = [GalleryInline, OptionInline]
 
 
 @admin.register(SetDiscount)

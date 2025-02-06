@@ -20,6 +20,8 @@ class ProductSerializer(serializers.ModelSerializer):
     category = CategorySerializer()
     tags = TagSerializer(many=True)
     image = serializers.SerializerMethodField()
+    galleries = serializers.SerializerMethodField()
+    options = serializers.SerializerMethodField()
     discount_price = serializers.FloatField()
 
     class Meta:
@@ -31,3 +33,21 @@ class ProductSerializer(serializers.ModelSerializer):
 
     def get_discount_price(self, obj):
         return self.get_discount_price()
+
+    def get_galleries(self, obj):
+        return (
+            {
+                "title": gallery.title,
+                "image": f"{settings.BACKEND_URL}{gallery.image.url}",
+            }
+            for gallery in obj.galleries.all()
+        )
+
+    def get_options(self, obj):
+        return (
+            {
+                "title": option.title,
+                "description": option.description,
+            }
+            for option in obj.options.all()
+        )

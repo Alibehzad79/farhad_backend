@@ -23,9 +23,9 @@ def product_list_api_view(request):
 @api_view(["GET"])
 def product_detail_api_view(request, *args, **kwargs):
     try:
-        product = Product.objects.get(id=kwargs["id"])
+        product = Product.objects.get(slug=kwargs["slug"])
     except:
-        raise Response(
+        return Response(
             data={"message": "محصولی یافت نشد."}, status=status.HTTP_404_NOT_FOUND
         )
 

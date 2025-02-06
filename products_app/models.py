@@ -3,6 +3,7 @@ from django.utils.translation import gettext_lazy as _
 from django.core import validators
 from django.core.exceptions import ValidationError
 from django.db.models import Q
+from tinymce.models import HTMLField
 
 # Create your models here.
 
@@ -43,17 +44,21 @@ class ProductManager(models.Manager):
             | Q(tags__name__icontains=query)
             | Q(tags__slug__icontains=query)
         )
-        return self.get_queryset().filter(lookup).order_by('-date_created').all().distinct()
+        return (
+            self.get_queryset()
+            .filter(lookup)
+            .order_by("-date_created")
+            .all()
+            .distinct()
+        )
 
 
 class Product(models.Model):
     STATUS = (("active", "فعال"), ("deactive", "غیرفعال"))
     title = models.CharField(max_length=100, verbose_name=_("عنوان محصول"))
     slug = models.SlugField(verbose_name=_("اسلاگ"), blank=True, null=True)
-    short_description = models.CharField(
-        max_length=165, verbose_name=_("توضیحات مختصر")
-    )
-    content = models.TextField(verbose_name=_("توضیحات کامل"))
+    short_description = models.TextField(verbose_name=_("توضیحات مختصر"))
+    content = HTMLField(verbose_name=_("توضیحات کامل"))
     image = models.ImageField(upload_to="images/", verbose_name=_("عکس محصول"))
     price = models.BigIntegerField(default=0, verbose_name=_("قیمت(تومان)"))
     discount = models.FloatField(
@@ -112,6 +117,24 @@ class Gallery(models.Model):
     class Meta:
         verbose_name = _("گالری")
         verbose_name_plural = _("گالری ها")
+
+
+class Option(models.Model):
+    product = models.ForeignKey(
+        Product,
+        on_delete=models.CASCADE,
+        verbose_name=_("محصول"),
+        related_name="options",
+    )
+    title = models.CharField(max_length=100, verbose_name=_("عنوان"))
+    description = models.CharField(max_length=100, verbose_name=_("توضیحات کوتاه"))
+
+    def __str__(self):
+        return self.title
+
+    class Meta:
+        verbose_name = _("آپشن")
+        verbose_name_plural = _("آپشن ها")
 
 
 class SetDiscount(models.Model):
