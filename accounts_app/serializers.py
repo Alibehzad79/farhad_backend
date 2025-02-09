@@ -53,3 +53,9 @@ class ChangePasswordSerializer(serializers.Serializer):
         if not get_user_model().objects.filter(reset_password_token=value).exists():
             raise serializers.ValidationError("توکن نامعتبر")
         return value
+
+
+class UserDetailSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = get_user_model()
+        exclude = ("password","reset_password_token")

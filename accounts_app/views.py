@@ -1,7 +1,7 @@
 from django.shortcuts import render
-from rest_framework.decorators import api_view
+from rest_framework.decorators import api_view, permission_classes
 from rest_framework.response import Response
-from rest_framework import status
+from rest_framework import status, permissions
 from django.contrib.auth import get_user_model
 from django.contrib.auth.hashers import make_password, get_random_string
 from django.core.mail import send_mail
@@ -9,6 +9,7 @@ from accounts_app.serializers import (
     RegisterSerializer,
     ResetPasswordSerializer,
     ChangePasswordSerializer,
+    UserDetailSerializer,
 )
 from config import settings
 
@@ -74,3 +75,11 @@ def change_password_api_view(request):
             data={"message": "رمز عبور با موفقیت تغییر یافت"}, status=status.HTTP_200_OK
         )
     return Response(data=serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+@api_view(["GET"])
+@permission_classes([permissions.IsAuthenticated])
+def user_detail_api_view(request):
+    user = request.user
+    serializer = UserDetailSerializer(user, many=False)
+    return Response(data=serializer.data, status=status.HTTP_200_OK)

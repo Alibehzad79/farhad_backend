@@ -10,6 +10,7 @@ from accounts_app.views import (
     register_api_view,
     send_reset_password_email_api_view,
     change_password_api_view,
+    user_detail_api_view,
 )
 
 urlpatterns = [
@@ -28,4 +29,5 @@ urlpatterns = [
         change_password_api_view,
         name="change_password_api_view",
     ),
+    path("user/", user_detail_api_view, name="user_detail_api_view"),
 ]
