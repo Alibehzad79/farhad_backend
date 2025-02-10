@@ -10,6 +10,7 @@ from accounts_app.serializers import (
     ResetPasswordSerializer,
     ChangePasswordSerializer,
     UserDetailSerializer,
+    EditUserDetailSerializer,
 )
 from config import settings
 
@@ -83,3 +84,18 @@ def user_detail_api_view(request):
     user = request.user
     serializer = UserDetailSerializer(user, many=False)
     return Response(data=serializer.data, status=status.HTTP_200_OK)
+
+
+@api_view(["POST"])
+@permission_classes([permissions.IsAuthenticated])
+def edit_user_detail_api_view(request):
+    user = request.user
+    serializer = EditUserDetailSerializer(data=request.data)
+    if serializer.is_valid():
+        user.first_name = serializer.data["first_name"]
+        user.last_name = serializer.data["last_name"]
+        user.address = serializer.data["address"]
+        user.phone_number = serializer.data["phone_number"]
+        user.save()
+        return Response(data=serializer.data, status=status.HTTP_201_CREATED)
+    Response(data=serializer.errors, status=status.HTTP_400_BAD_REQUEST)

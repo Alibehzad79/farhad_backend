@@ -56,6 +56,34 @@ class ChangePasswordSerializer(serializers.Serializer):
 
 
 class UserDetailSerializer(serializers.ModelSerializer):
+    full_name = serializers.SerializerMethodField(read_only=True)
+
     class Meta:
         model = get_user_model()
-        exclude = ("password","reset_password_token")
+        exclude = ("password", "reset_password_token")
+
+    def get_full_name(self, obj):
+        return f"{obj.first_name} {obj.last_name}"
+
+
+class EditUserDetailSerializer(serializers.Serializer):
+    first_name = serializers.CharField(
+        required=True,
+    )
+    last_name = serializers.CharField(
+        required=True,
+    )
+    address = serializers.CharField(
+        required=True,
+    )
+    phone_number = serializers.CharField(
+        validators=[
+            RegexValidator(
+                regex="^[0-9]+$",
+                message="نوع باید عدد باشد.",
+            )
+        ],
+        max_length=11,
+        min_length=11,
+        required=True,
+    )

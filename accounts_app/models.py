@@ -14,5 +14,9 @@ class CustomUser(AbstractUser):
         null=True,
         unique=True,
     )
+    phone_number = models.CharField(
+        max_length=11, blank=True, null=True, verbose_name=_("شماره تلفن")
+    )
+    address = models.TextField(blank=True, null=True, verbose_name=_("آدرس"))
     USERNAME_FIELD = "email"
     REQUIRED_FIELDS = ["username"]

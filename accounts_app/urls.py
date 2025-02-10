@@ -11,6 +11,7 @@ from accounts_app.views import (
     send_reset_password_email_api_view,
     change_password_api_view,
     user_detail_api_view,
+    edit_user_detail_api_view,
 )
 
 urlpatterns = [
@@ -30,4 +31,5 @@ urlpatterns = [
         name="change_password_api_view",
     ),
     path("user/", user_detail_api_view, name="user_detail_api_view"),
+    path("user/edit/", edit_user_detail_api_view, name="edit_user_detail_api_view"),
 ]
