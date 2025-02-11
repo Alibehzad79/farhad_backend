@@ -56,11 +56,19 @@ class ProductManager(models.Manager):
 class Product(models.Model):
     STATUS = (("active", "فعال"), ("deactive", "غیرفعال"))
     title = models.CharField(max_length=100, verbose_name=_("عنوان محصول"))
-    slug = models.SlugField(verbose_name=_("اسلاگ"), blank=True, null=True)
+    slug = models.SlugField(
+        verbose_name=_("اسلاگ"),
+        unique=True,
+    )
     short_description = models.TextField(verbose_name=_("توضیحات مختصر"))
     content = HTMLField(verbose_name=_("توضیحات کامل"))
     image = models.ImageField(upload_to="images/", verbose_name=_("عکس محصول"))
     price = models.BigIntegerField(default=0, verbose_name=_("قیمت(تومان)"))
+    count = models.IntegerField(
+        default=1,
+        validators=[validators.MinValueValidator(0, "کمترین مقدار باید سفر باشد")],
+        verbose_name=_("تعداد موجود در انبار"),
+    )
     discount = models.FloatField(
         default=0,
         verbose_name=_("درصد تخفیف"),
@@ -86,15 +94,14 @@ class Product(models.Model):
         return self.title
 
     def save(self, *args, **kwargs):
-        # do save slug
-        if self.slug == None:
-            self.slug = self.title.replace(" ", "-")
         super(Product, self).save(*args, **kwargs)
 
     def discount_price(self):
         if self.discount > 0:
             final_price = self.price - (self.price * (self.discount / 100))
             return final_price
+
+    discount_price.short_description = "قیمت کل با تخفیف"
 
     class Meta:
         verbose_name = _("محصول")
