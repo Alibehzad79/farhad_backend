@@ -2,6 +2,7 @@ from django.db import models
 from django.utils.translation import gettext_lazy as _
 from django.contrib.auth import get_user_model
 from django.core import validators
+from django.core.exceptions import ValidationError
 from products_app.models import Product
 
 # Create your models here.
@@ -41,3 +42,9 @@ class Cart(models.Model):
     class Meta:
         verbose_name = _("سبد خرید")
         verbose_name_plural = _("سبد خریدها")
+
+    def clean(self):
+        if Cart.objects.filter(product=self.product, user=self.user).exists():
+            carts = Cart.objects.filter(product=self.product, user=self.user).all()
+            for cart in carts:
+                cart.delete()
