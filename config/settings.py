@@ -44,11 +44,12 @@ INSTALLED_APPS = [
     "django_filters",
     "rest_framework_api_key",
     "rest_framework_simplejwt",
-    'tinymce',
+    "tinymce",
     # apps
     "accounts_app.apps.AccountsAppConfig",
     "products_app.apps.ProductsAppConfig",
     "carts_app.apps.CartsAppConfig",
+    "wishlist_app.apps.WishlistAppConfig",
 ]
 
 MIDDLEWARE = [

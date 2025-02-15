@@ -26,6 +26,7 @@ urlpatterns = [
     path(f"{api_version_v_1}/accounts/", include("accounts_app.urls")),
     path(f"{api_version_v_1}/products/", include("products_app.urls")),
     path(f"{api_version_v_1}/carts/", include("carts_app.urls")),
+    path(f"{api_version_v_1}/wishlist/", include("wishlist_app.urls")),
     path("tinymce/", include("tinymce.urls")),
     path("admin/", admin.site.urls),
 ]
