@@ -54,7 +54,6 @@ def get_cart_list_api_view(request):
 @permission_classes([permissions.IsAuthenticated])
 def edit_cart(request):
     user = request.user
-    print(request.data)
     serializer = AddCartSerializer(data=request.data)
     if serializer.is_valid():
         product = Product.objects.get(slug=serializer.data["product_slug"])

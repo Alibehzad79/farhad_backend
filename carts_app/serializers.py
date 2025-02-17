@@ -38,8 +38,5 @@ class AddCartSerializer(serializers.Serializer):
             raise serializers.ValidationError({"product_slug": "محصول یافت نشد."})
 
         if quantity > product.count:
-            # raise serializers.ValidationError(
-            #     {"quantity": "مقدار درخواستی بیشتر از مقدار موجود در انبار است."}
-            # )
             quantity = product.count
         return data
