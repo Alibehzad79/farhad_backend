@@ -45,11 +45,13 @@ INSTALLED_APPS = [
     "rest_framework_api_key",
     "rest_framework_simplejwt",
     "tinymce",
+    "azbankgateways",
     # apps
     "accounts_app.apps.AccountsAppConfig",
     "products_app.apps.ProductsAppConfig",
     "carts_app.apps.CartsAppConfig",
     "wishlist_app.apps.WishlistAppConfig",
+    "orders_app.apps.OrdersAppConfig",
 ]
 
 MIDDLEWARE = [
@@ -67,7 +69,7 @@ ROOT_URLCONF = "config.urls"
 TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
-        "DIRS": [],
+        "DIRS": [BASE_DIR / "templates"],
         "APP_DIRS": True,
         "OPTIONS": {
             "context_processors": [
@@ -165,7 +167,7 @@ EMAIL_HOST_USER = "email.best.social@gmail.com"
 EMAIL_HOST_PASSWORD = "ytmf yygy wetz znfa"
 DEFAULT_FROM_EMAIL = "no-replay@mail.best-social.ir"
 
-FRONTEND_URL = "http://169.254.158.85:3000"
+FRONTEND_URL = "http://169.254.217.23:3000"
 BACKEND_URL = "http://127.0.0.1:8000"
 
 
@@ -201,4 +203,57 @@ SIMPLE_JWT = {
     "TOKEN_BLACKLIST_SERIALIZER": "rest_framework_simplejwt.serializers.TokenBlacklistSerializer",
     "SLIDING_TOKEN_OBTAIN_SERIALIZER": "rest_framework_simplejwt.serializers.TokenObtainSlidingSerializer",
     "SLIDING_TOKEN_REFRESH_SERIALIZER": "rest_framework_simplejwt.serializers.TokenRefreshSlidingSerializer",
+}
+
+
+AZ_IRANIAN_BANK_GATEWAYS = {
+    "GATEWAYS": {
+        # "BMI": {
+        #     "MERCHANT_CODE": "<YOUR MERCHANT CODE>",
+        #     "TERMINAL_CODE": "<YOUR TERMINAL CODE>",
+        #     "SECRET_KEY": "<YOUR SECRET CODE>",
+        # },
+        # "SEP": {
+        #     "MERCHANT_CODE": "<YOUR MERCHANT CODE>",
+        #     "TERMINAL_CODE": "<YOUR TERMINAL CODE>",
+        # },
+        "ZARINPALV4": {
+            "MERCHANT_CODE": "b8284c9d-4c66-43a5-a1e8-e44a9bd99ead",
+            "SANDBOX": 1,  # 0 disable, 1 active
+        },
+        # "IDPAY": {
+        #     "MERCHANT_CODE": "<YOUR MERCHANT CODE>",
+        #     "METHOD": "POST",  # GET or POST
+        #     "X_SANDBOX": 1,  # 0 disable, 1 active
+        # },
+        # "ZIBAL": {
+        #     "MERCHANT_CODE": "<YOUR MERCHANT CODE>",
+        # },
+        # "BAHAMTA": {
+        #     "MERCHANT_CODE": "<YOUR MERCHANT CODE>",
+        # },
+        # "MELLAT": {
+        #     "TERMINAL_CODE": "<YOUR TERMINAL CODE>",
+        #     "USERNAME": "<YOUR USERNAME>",
+        #     "PASSWORD": "<YOUR PASSWORD>",
+        # },
+        "PAYV1": {
+            "MERCHANT_CODE": "<YOUR MERCHANT CODE>",
+            "X_SANDBOX": 1,  # 0 disable, 1 active
+        },
+    },
+    "IS_SAMPLE_FORM_ENABLE": True,  # اختیاری و پیش فرض غیر فعال است
+    "DEFAULT": "ZARINPAL",
+    "CURRENCY": "IRT",  # اختیاری
+    "TRACKING_CODE_QUERY_PARAM": "tc",  # اختیاری
+    "TRACKING_CODE_LENGTH": 16,  # اختیاری
+    "SETTING_VALUE_READER_CLASS": "azbankgateways.readers.DefaultReader",  # اختیاری
+    "BANK_PRIORITIES": [
+        "ZARINPALV4",
+        # "IDPAY",
+        # "PAYV1",
+        # and so on ...
+    ],  # اختیاری
+    "IS_SAFE_GET_GATEWAY_PAYMENT": True,  # اختیاری، بهتر است True بزارید.
+    "CUSTOM_APP": None,  # اختیاری
 }

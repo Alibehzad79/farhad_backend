@@ -41,9 +41,7 @@ def add_cart(request):
 @permission_classes([permissions.IsAuthenticated])
 def get_cart_list_api_view(request):
     carts = Cart.objects.filter(user=request.user).all()
-    amount = 0
-    for cart in carts:
-        amount += cart.total_price()
+    amount = sum(cart.total_price() for cart in carts)
 
     cart_serializer = CartSerializer(carts, many=True)
     serializer = {"carts": cart_serializer.data, "amount": amount}
