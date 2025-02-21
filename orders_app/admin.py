@@ -11,10 +11,10 @@ class OrderItemInline(admin.TabularInline):
 
 @admin.register(Order)
 class OrderAdmin(admin.ModelAdmin):
-    list_display = ("user", "order_id", "date_created", "status")
+    list_display = ("user", "order_id", "date_created", "status", "pay_status")
     list_display_links = ("user", "order_id")
-    list_editable = ("status",)
-    list_filter = ("date_created", "status")
+    list_editable = ("status", "pay_status")
+    list_filter = ("date_created", "status", "pay_status")
     search_fields = (
         "user__username",
         "user__first_name",

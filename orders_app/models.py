@@ -8,10 +8,15 @@ from products_app.models import Product
 
 
 class Order(models.Model):
-    STATUS = (
+    PAY_STATUS = (
         ("not_paid", "پرداخت نشده"),
         ("paid", "پرداخت شده"),
         ("cancled", "لغو شده"),
+    )
+    STATUS = (
+        ("none", "نامشخص"),
+        ("pending", "درحال انجام"),
+        ("done", "انجام شده"),
     )
 
     order_id = models.CharField(
@@ -30,7 +35,15 @@ class Order(models.Model):
     date_created = models.DateTimeField(
         auto_now_add=False, auto_now=False, verbose_name=_("تاریخ ایجاد")
     )
-    status = models.CharField(max_length=100, choices=STATUS, default="not_paid")
+    pay_status = models.CharField(
+        max_length=100,
+        choices=PAY_STATUS,
+        default="not_paid",
+        verbose_name=_("وضعیت پرداختی"),
+    )
+    status = models.CharField(
+        max_length=100, choices=STATUS, default="none", verbose_name=_("وضعیت سفارش")
+    )
 
     def save(self, *args, **kwargs):
         if self.order_id is None:
@@ -49,13 +62,18 @@ class Order(models.Model):
 
 
 class OrderItem(models.Model):
-    order = models.ForeignKey(Order, on_delete=models.CASCADE, verbose_name=_("سفارش"))
-    porudct_name = models.CharField(max_length=100, verbose_name=_("نام محصول"))
+    order = models.ForeignKey(
+        Order,
+        on_delete=models.CASCADE,
+        verbose_name=_("سفارش"),
+        related_name="orderitems",
+    )
+    product_name = models.CharField(max_length=100, verbose_name=_("نام محصول"))
     quantity = models.PositiveIntegerField(default=1, verbose_name=_("مقدار"))
     price = models.BigIntegerField(default=1, verbose_name=_("قیمت کل"))
 
     def __str__(self):
-        return self.porudct_name
+        return self.product_name
 
     class Meta:
         verbose_name = _("محصول")

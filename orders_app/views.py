@@ -12,6 +12,7 @@ from rest_framework_simplejwt.tokens import AccessToken
 #######
 from orders_app.models import Order, OrderItem
 from carts_app.models import Cart
+from orders_app.serializers import OrderSerializer
 
 ######
 import logging
@@ -95,6 +96,16 @@ def callback_gateway_view(request):
     except Order.DoesNotExist:
         return HttpResponse("سفاری یافت نشد.")
 
+    try:
+        carts = Cart.objects.filter(user=user).all()
+    except:
+        return HttpResponse("سبد خرید یافت نشد.")
+
+    if len(carts) < 1:
+        return response.Response(
+            data={"error": "سبد خرید خالی است."}, status=status.HTTP_400_BAD_REQUEST
+        )
+
     if order.status == "paid":
         return HttpResponse("سفاری از قبل پرداخت شده است.")
 
@@ -112,14 +123,21 @@ def callback_gateway_view(request):
     if bank_record.is_success:
         # پرداخت با موفقیت انجام پذیرفته است و بانک تایید کرده است.
         # می توانید کاربر را به صفحه نتیجه هدایت کنید یا نتیجه را نمایش دهید.
-        order.status = "paid"
+        order.pay_status = "paid"
+        order.status = "pending"
+        carts.delete()
         order.save()
-        return redirect(config_settings.FRONTEND_URL)
-    order.status = "cancled"
+        return redirect(
+            config_settings.FRONTEND_URL
+            + "/accounts/profile/payments/pay-status?status=OK"
+        )
+    order.pay_status = "cancled"
+    order.status = "none"
     order.save()
     # پرداخت موفق نبوده است. اگر پول کم شده است ظرف مدت ۴۸ ساعت پول به حساب شما بازخواهد گشت.
-    return HttpResponse(
-        "پرداخت با شکست مواجه شده است. اگر پول کم شده است ظرف مدت ۴۸ ساعت پول به حساب شما بازخواهد گشت."
+    return redirect(
+        config_settings.FRONTEND_URL
+        + "/accounts/profile/payments/pay-status?status=NOK"
     )
 
 
@@ -150,7 +168,7 @@ def create_order(request):
     for cart in carts:
         OrderItem.objects.create(
             order=new_order,
-            porudct_name=cart.product.title,
+            product_name=cart.product.title,
             quantity=cart.quantity,
             price=cart.total_price(),
         )
@@ -160,3 +178,33 @@ def create_order(request):
         data={"order_id": new_order.order_id},
         status=status.HTTP_201_CREATED,
     )
+
+
+@api_view(["GET"])
+@permission_classes([permissions.IsAuthenticated])
+def user_orders(request):
+    user = request.user
+    orders = Order.objects.filter(user=user).all()
+    serializer = OrderSerializer(orders, many=True)
+    return response.Response(data=serializer.data, status=status.HTTP_200_OK)
+
+
+@api_view(["GET"])
+@permission_classes([permissions.IsAuthenticated])
+def order_detail(request):
+    user = request.user
+    try:
+        order_id = request.GET["order_id"]
+    except:
+        return response.Response(
+            data={"msg": "سفارش یافت نشد."}, status=status.HTTP_404_NOT_FOUND
+        )
+    try:
+        order = Order.objects.get(user=user, order_id=order_id)
+    except:
+        return response.Response(
+            data={"msg": "سفارش یافت نشد."}, status=status.HTTP_404_NOT_FOUND
+        )
+
+    serializer = OrderSerializer(order)
+    return response.Response(data=serializer.data, status=status.HTTP_200_OK)
