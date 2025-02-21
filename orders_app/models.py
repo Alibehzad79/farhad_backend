@@ -68,7 +68,12 @@ class OrderItem(models.Model):
         verbose_name=_("سفارش"),
         related_name="orderitems",
     )
-    product_name = models.CharField(max_length=100, verbose_name=_("نام محصول"))
+    # product_name = models.CharField(max_length=100, verbose_name=_("نام محصول"))
+    product = models.ForeignKey(
+        Product,
+        on_delete=models.CASCADE,
+        verbose_name=_("محصول"),
+    )
     quantity = models.PositiveIntegerField(default=1, verbose_name=_("مقدار"))
     price = models.BigIntegerField(default=1, verbose_name=_("قیمت کل"))
 

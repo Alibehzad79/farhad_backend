@@ -168,7 +168,7 @@ def create_order(request):
     for cart in carts:
         OrderItem.objects.create(
             order=new_order,
-            product_name=cart.product.title,
+            product=cart.product,
             quantity=cart.quantity,
             price=cart.total_price(),
         )
