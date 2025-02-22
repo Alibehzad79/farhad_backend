@@ -132,7 +132,7 @@ def callback_gateway_view(request):
             + "/accounts/profile/payments/pay-status?status=OK"
         )
     order.pay_status = "cancled"
-    order.status = "none"
+    order.status = "cancled"
     order.save()
     # پرداخت موفق نبوده است. اگر پول کم شده است ظرف مدت ۴۸ ساعت پول به حساب شما بازخواهد گشت.
     return redirect(

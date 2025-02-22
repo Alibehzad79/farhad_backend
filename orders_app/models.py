@@ -14,6 +14,7 @@ class Order(models.Model):
         ("cancled", "لغو شده"),
     )
     STATUS = (
+        ("cancled", "لغو شده"),
         ("none", "نامشخص"),
         ("pending", "درحال انجام"),
         ("done", "انجام شده"),
@@ -78,7 +79,7 @@ class OrderItem(models.Model):
     price = models.BigIntegerField(default=1, verbose_name=_("قیمت کل"))
 
     def __str__(self):
-        return self.product_name
+        return self.product.title
 
     class Meta:
         verbose_name = _("محصول")
