@@ -1,5 +1,12 @@
 from django.contrib import admin, messages
-from products_app.models import Category, Tag, Product, Gallery, SetDiscount, Option
+from products_app.models import (
+    Category,
+    Tag,
+    Product,
+    Gallery,
+    SetDiscount,
+    Option,
+)
 from django.urls import reverse
 from django.utils.html import format_html
 
@@ -9,7 +16,6 @@ from django.utils.html import format_html
 class GalleryInline(admin.TabularInline):
     model = Gallery
     extra = 3
-
 
 class OptionInline(admin.TabularInline):
     model = Option

@@ -62,6 +62,12 @@ class Product(models.Model):
     )
     short_description = models.TextField(verbose_name=_("توضیحات مختصر"))
     content = HTMLField(verbose_name=_("توضیحات کامل"))
+    keywords = models.TextField(
+        verbose_name=_("Keywords"),
+        help_text=_("مثال: چاقو، موبایل، ..."),
+        blank=True,
+        null=True,
+    )
     image = models.ImageField(upload_to="images/", verbose_name=_("عکس محصول"))
     price = models.BigIntegerField(default=0, verbose_name=_("قیمت(تومان)"))
     count = models.IntegerField(
