@@ -44,19 +44,17 @@ def categories_tags_api_view(request):
     return Response(data=serializer, status=status.HTTP_200_OK)
 
 
-# @api_view(["GET"])
-# def tags_api_view(request):
-#     tags = Category.objects.all()
-#     serializer = TagSerializer(tags, many=True)
-#     return Response(data=serializer.data, status=status.HTTP_200_OK)
-
-
 @api_view(["GET"])
 def product_list_by_search_api_view(request):
     query = request.GET.get("query")
     print(query)
     if query is not None:
-        products = Product.objects.get_search(query=query)
+        if query == "new":
+            products = Product.objects.order_by("-date_created").all()
+        elif query == "old":
+            products = Product.objects.order_by("date_created").all()
+        else:
+            products = Product.objects.get_search(query=query)
     else:
         products = Product.objects.order_by("-date_created").all()
     serializer = ProductSerializer(products, many=True)
