@@ -93,7 +93,9 @@ class Product(models.Model):
     date_created = models.DateTimeField(
         auto_now=False, auto_now_add=False, verbose_name=_("تاریخ ایجاد")
     )
-
+    visit_count = models.BigIntegerField(
+        default=0, verbose_name=_("تعداد بازدید"), editable=False
+    )
     objects = ProductManager()
 
     def __str__(self):

@@ -24,6 +24,8 @@ def product_list_api_view(request):
 def product_detail_api_view(request, *args, **kwargs):
     try:
         product = Product.objects.get(slug=kwargs["slug"])
+        product.visit_count += 1
+        product.save()
     except:
         return Response(
             data={"message": "محصولی یافت نشد."}, status=status.HTTP_404_NOT_FOUND
@@ -53,6 +55,8 @@ def product_list_by_search_api_view(request):
             products = Product.objects.order_by("-date_created").all()
         elif query == "old":
             products = Product.objects.order_by("date_created").all()
+        elif query == "view":
+            products = Product.objects.order_by("-visit_count").all()
         else:
             products = Product.objects.get_search(query=query)
     else:

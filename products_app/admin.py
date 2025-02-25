@@ -17,6 +17,7 @@ class GalleryInline(admin.TabularInline):
     model = Gallery
     extra = 3
 
+
 class OptionInline(admin.TabularInline):
     model = Option
     extra = 3
@@ -31,10 +32,18 @@ class ProductAdmin(admin.ModelAdmin):
         "discount_price",
         "date_created",
         "status",
+        "visit_count",
     )
     list_editable = ("status",)
-    list_filter = ("date_created", "category")
-    search_fields = ("title", "short_description", "content")
+    list_filter = (
+        "date_created",
+        "category",
+    )
+    search_fields = (
+        "title",
+        "short_description",
+        "content",
+    )
     inlines = [GalleryInline, OptionInline]
 
 
