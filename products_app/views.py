@@ -57,6 +57,10 @@ def product_list_by_search_api_view(request):
             products = Product.objects.order_by("date_created").all()
         elif query == "view":
             products = Product.objects.order_by("-visit_count").all()
+        elif query == "discount":
+            products = (
+                Product.objects.filter(discount__gt=0).order_by("-discount").all()
+            )
         else:
             products = Product.objects.get_search(query=query)
     else:

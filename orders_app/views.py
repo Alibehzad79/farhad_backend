@@ -48,7 +48,6 @@ def go_to_gateway_view(request):
         return HttpResponse("سفاری از قبل پرداخت شده است.")
     # خواندن مبلغ از هر جایی که مد نظر است
     amount = order.total_price
-    print(amount)
     # user_mobile_number = "+989112221234"  # اختیاری
     query_params = {"order_id": order.order_id, "token": token}
     factory = bankfactories.BankFactory()
