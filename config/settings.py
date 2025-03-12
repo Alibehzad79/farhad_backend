@@ -54,6 +54,7 @@ INSTALLED_APPS = [
     "carts_app.apps.CartsAppConfig",
     "wishlist_app.apps.WishlistAppConfig",
     "orders_app.apps.OrdersAppConfig",
+    "site_settings_app.apps.SiteSettingsAppConfig",
 ]
 
 X_FRAME_OPTIONS = "SAMEORIGIN"
@@ -172,7 +173,7 @@ EMAIL_HOST_USER = "email.best.social@gmail.com"
 EMAIL_HOST_PASSWORD = "ytmf yygy wetz znfa"
 DEFAULT_FROM_EMAIL = "no-replay@mail.best-social.ir"
 
-FRONTEND_URL = "http://169.254.217.23:3000"
+FRONTEND_URL = "http://localhost:3000"
 BACKEND_URL = "http://127.0.0.1:8000"
 
 
@@ -224,7 +225,7 @@ AZ_IRANIAN_BANK_GATEWAYS = {
         # },
         "ZARINPALV4": {
             "MERCHANT_CODE": "b8284c9d-4c66-43a5-a1e8-e44a9bd99ead",
-            "SANDBOX": 1,  # 0 disable, 1 active
+            "SANDBOX": 0,  # 0 disable, 1 active
         },
         # "IDPAY": {
         #     "MERCHANT_CODE": "<YOUR MERCHANT CODE>",
