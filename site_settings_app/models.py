@@ -1,5 +1,6 @@
 from django.db import models
 from django.utils.translation import gettext_lazy as _
+from tinymce.models import HTMLField
 
 # Create your models here.
 
@@ -57,10 +58,33 @@ class Phone(models.Model):
 
 
 class About(models.Model):
+    image = models.ImageField(upload_to="images/about/", verbose_name=_("عکس"))
+    content = HTMLField(verbose_name=_("درباره ما"))
 
     class Meta:
         verbose_name = _("درباره ما")
         verbose_name_plural = _("درباره ما ها")
+
+    def __str__(self):
+        return str(_("درباره ما"))
+
+
+class Team(models.Model):
+    about = models.ForeignKey(
+        About,
+        on_delete=models.CASCADE,
+        verbose_name=_("درباره ما"),
+        related_name="teams",
+    )
+    name = models.CharField(max_length=100, verbose_name=_("نام"))
+    image = models.ImageField(upload_to="images/team/", verbose_name=_("عکس"))
+
+    class Meta:
+        verbose_name = _("تیم")
+        verbose_name_plural = _("تیم ها")
+
+    def __str__(self):
+        return self.name
 
 
 class Contact(models.Model):
