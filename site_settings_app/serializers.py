@@ -62,3 +62,12 @@ class AboutSerializer(serializers.ModelSerializer):
 
     def get_teams(self, obj):
         return (TeamSerializer(team).data for team in obj.teams.all())
+
+
+class ContactSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Contact
+        exclude = (
+            "answer",
+            "status",
+        )

@@ -1,5 +1,5 @@
 from django.contrib import admin
-from site_settings_app.models import Setting, Social, Phone, About, Team
+from site_settings_app.models import Setting, Social, Phone, About, Team, Contact
 
 # Register your models here.
 
@@ -29,3 +29,8 @@ class SettingAdmin(admin.ModelAdmin):
 class AboutAdmin(admin.ModelAdmin):
     list_display = ("__str__",)
     inlines = [TeamInline]
+
+
+@admin.register(Contact)
+class ContactAdmin(admin.ModelAdmin):
+    list_display = ("__str__",)
