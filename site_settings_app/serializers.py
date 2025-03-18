@@ -71,3 +71,9 @@ class ContactSerializer(serializers.ModelSerializer):
             "answer",
             "status",
         )
+
+
+class NotificationSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Notification
+        fields = "__all__"

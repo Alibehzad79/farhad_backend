@@ -161,7 +161,22 @@ class Contact(models.Model):
 
 
 class Notification(models.Model):
+    alert = models.TextField(
+        verbose_name=_("متن"),
+    )
+    date_created = models.DateTimeField(
+        auto_now=False,
+        auto_now_add=False,
+        verbose_name=_("تاریخ ایجاد"),
+    )
+    active = models.BooleanField(
+        default=True,
+        verbose_name=_("فعال"),
+    )
 
     class Meta:
         verbose_name = _("اعلان")
         verbose_name_plural = _("اعلانات")
+
+    def __str__(self):
+        return self.date_created.strftime("%Y/%m/%d")

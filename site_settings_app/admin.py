@@ -1,5 +1,13 @@
 from django.contrib import admin
-from site_settings_app.models import Setting, Social, Phone, About, Team, Contact
+from site_settings_app.models import (
+    Setting,
+    Social,
+    Phone,
+    About,
+    Team,
+    Contact,
+    Notification,
+)
 
 # Register your models here.
 
@@ -34,3 +42,9 @@ class AboutAdmin(admin.ModelAdmin):
 @admin.register(Contact)
 class ContactAdmin(admin.ModelAdmin):
     list_display = ("__str__",)
+
+
+@admin.register(Notification)
+class NotificationAdmin(admin.ModelAdmin):
+    list_display = ("__str__", "active")
+    list_editable = ("active",)
