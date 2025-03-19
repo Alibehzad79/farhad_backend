@@ -15,7 +15,6 @@ class Order(models.Model):
     )
     STATUS = (
         ("cancled", "لغو شده"),
-        ("none", "نامشخص"),
         ("pending", "درحال انجام"),
         ("done", "انجام شده"),
     )
@@ -43,7 +42,7 @@ class Order(models.Model):
         verbose_name=_("وضعیت پرداختی"),
     )
     status = models.CharField(
-        max_length=100, choices=STATUS, default="none", verbose_name=_("وضعیت سفارش")
+        max_length=100, choices=STATUS, default="cancled", verbose_name=_("وضعیت سفارش")
     )
 
     def save(self, *args, **kwargs):
